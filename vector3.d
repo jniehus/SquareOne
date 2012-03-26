@@ -30,7 +30,7 @@ struct Vector3(T)
     void invert() { v[] *= -1; }
     
     /// magnitude: Pythagoras theorm for 3D
-    T magnitude() { return std.math.sqrt(squareMagnitude()); }
+    @property T magnitude() { return std.math.sqrt(squareMagnitude); }
     
     T squareMagnitude() {
         T m2 = 0;
@@ -183,7 +183,7 @@ unittest
     v.invert();
     assert(v.toString() == "real[-4, -7, -8]");
     v.invert();   
-    assert(v.magnitude() >= 11.3578f && v.magnitude <= 11.3579f);   
+    assert(v.magnitude >= 11.3578f && v.magnitude <= 11.3579f);   
     v.normalize();
     assert(v.toString() == "real[0.35218, 0.616316, 0.704361]");
     assert((v.crossProduct(v)).v == [0, 0, 0]);
