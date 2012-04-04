@@ -9,8 +9,6 @@ import std.stdio, std.math, std.conv, std.traits;
 struct Vector3(T)
   if (isFloatingPoint!T)
 {
-    alias Vector3!T Vector; 
-
     /// vector data: x = 0, y = 1, z = 2... as one would hopefully expect...
     T[3] v = [0, 0, 0];
     
@@ -54,7 +52,7 @@ struct Vector3(T)
      *  b     = Vector3 to be scaled and added
      *  scale = scale factor for b
      */
-    void addScaledVector(ref Vector b, T scale) {
+    void addScaledVector(ref Vector3 b, T scale) {
         v[] += (b * scale).v[];
     }
     
@@ -69,18 +67,18 @@ struct Vector3(T)
      * Returns:
      *  Vector3 who's components are multiple of this vector and b's
      */
-    Vector componentProduct(ref Vector b) {
+    Vector3 componentProduct(ref Vector3 b) {
         auto tmp = v[].dup;
         tmp[] *= b.v[];
-        return Vector(tmp);
+        return Vector3(tmp);
     }
     
-    void componentProductUpdate(ref Vector b) {
+    void componentProductUpdate(ref Vector3 b) {
         v[] *= b.v[];
     }
     
-    Vector crossProduct(ref const Vector b) {
-        return Vector((v[1] * b.v[2]) - (v[2] * b.v[1]),
+    Vector3 crossProduct(ref const Vector3 b) {
+        return Vector3((v[1] * b.v[2]) - (v[2] * b.v[1]),
                        (v[2] * b.v[0]) - (v[0] * b.v[2]),
                        (v[0] * b.v[1]) - (v[1] * b.v[0]));
     }
@@ -89,21 +87,21 @@ struct Vector3(T)
      * OPERATORS
      */
     /// scalar multiplication
-    Vector opBinary(string op)(T rhs) if (op == "*") {
+    Vector3 opBinary(string op)(T rhs) if (op == "*") {
         auto tmp = v[].dup;
         tmp[] *= rhs;
-        return (Vector(tmp));        
+        return (Vector3(tmp));        
     }
 
     /// cross product
-    Vector opBinary(string op)(ref Vector rhs) if (op == "%") {
-        return Vector((v[1] * rhs.v[2]) - (v[2] * rhs.v[1]),
+    Vector3 opBinary(string op)(ref Vector3 rhs) if (op == "%") {
+        return Vector3((v[1] * rhs.v[2]) - (v[2] * rhs.v[1]),
                        (v[2] * rhs.v[0]) - (v[0] * rhs.v[2]),
                        (v[0] * rhs.v[1]) - (v[1] * rhs.v[0]));        
     }
     
     /// dot product
-    T opBinary(string op)(ref Vector rhs) if (op == "*") {
+    T opBinary(string op)(ref Vector3 rhs) if (op == "*") {
         auto tmp = v[].dup;
         T value = 0;
         for (int i = 0; i < 3; i++) {
@@ -113,27 +111,27 @@ struct Vector3(T)
     }
     
     /// add vector
-    Vector opBinary(string op)(ref Vector rhs) if (op == "+") {
+    Vector3 opBinary(string op)(ref Vector3 rhs) if (op == "+") {
         auto tmp = v[].dup;
         tmp[] += rhs.v[];
-        return (Vector(tmp));     
+        return (Vector3(tmp));     
     }
     
     /// subtract vector
-    Vector opBinary(string op)(ref Vector rhs) if (op == "-") {
+    Vector3 opBinary(string op)(ref Vector3 rhs) if (op == "-") {
         auto tmp = v[].dup;
         tmp[] -= rhs.v[];
-        return (Vector(tmp));     
+        return (Vector3(tmp));     
     }
 
     /// cross | dot | add | subtract on self
-    ref Vector opOpAssign(string op)(ref Vector rhs) {
+    ref Vector3 opOpAssign(string op)(ref Vector3 rhs) {
         v = opBinary!op(rhs).v;
         return this;
     }
     
     /// scalar multiply on self
-    ref Vector opOpAssign(string op)(T rhs) {
+    ref Vector3 opOpAssign(string op)(T rhs) {
         v = opBinary!op(rhs).v;
         return this;
     }    
@@ -142,7 +140,7 @@ struct Vector3(T)
     ref T opIndex(uint i) { return v[i]; }
     
     /// overide opEquals
-    bool opEquals(ref Vector rhs) {
+    bool opEquals(ref Vector3 rhs) {
         for (int i = 0; i < 3; ++i) {
             if (!approxEqual(v[i], rhs.v[i], 1e-4, 1e-5)) {
                 return false;
