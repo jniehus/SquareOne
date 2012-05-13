@@ -6,8 +6,7 @@ module vector3;
  
 import std.stdio, std.math, std.conv, std.traits;
 
-struct Vector3(T)
-  if (isFloatingPoint!T)
+struct Vector3(T) if (isFloatingPoint!T)
 {
     /// vector data: x = 0, y = 1, z = 2... as one would hopefully expect...
     T[3] v = [0, 0, 0];
@@ -219,7 +218,7 @@ unittest
     assert(boolChk);
     assert(boolChk2);
     
-    // --- addition subtractions ---
+    // --- addition subtractions
     q -= v;
     v += q;
     assert(q.v == [3, 3, 3]);
@@ -235,9 +234,8 @@ unittest
     assert(a.v == [-2, -4, -6]);
     assert(q.v == [3, 3, 3]);
     assert(v.v == [5, 7, 9]);    
-    // -----------------------------
     
-    // --- vector product / cross product ---
+    // --- vector product / cross product
     auto r = v % q;
     assert(r.v == [-6, 12, -6]);
     assert(q.v == [3, 3, 3]);
@@ -251,9 +249,8 @@ unittest
     r[1] -= 1;
     assert(r.v == [150, 24, -102]);       
     assert(v.v == [5, 7, 9]);
-    // ---------------------------------------
-    
-    // --- Multiplications ---
+
+    // --- Multiplications
     auto x = r * q;
     assert(x == 216);
     assert(r.v == [150, 24, -102]);   
@@ -266,7 +263,6 @@ unittest
     
     m *= 2;
     assert(m.v == [16, 16, 16]);
-    // -----------------------
     
     writeln("Vector3 operator overload unittest passed\n", m);
 }
