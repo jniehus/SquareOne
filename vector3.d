@@ -86,19 +86,29 @@ struct Vector3(T)
     /**
      * OPERATORS
      */
+    Vector3 opBinary(string op)(ref Vector3 rhs) if (op != "*") {
+        auto tmp = v[].dup;
+        static if (op == "%") {
+            return Vector3((v[1] * rhs.v[2]) - (v[2] * rhs.v[1]),
+                           (v[2] * rhs.v[0]) - (v[0] * rhs.v[2]),
+                           (v[0] * rhs.v[1]) - (v[1] * rhs.v[0]));
+        } 
+        else static if (op == "+") {
+            tmp[] += rhs.v[];
+            return Vector3(tmp);
+        } 
+        else static if (op == "-") {
+            tmp[] -= rhs.v[];
+            return Vector3(tmp);
+        }      
+    }
+
     /// scalar multiplication
     Vector3 opBinary(string op)(T rhs) if (op == "*") {
         auto tmp = v[].dup;
         tmp[] *= rhs;
         return (Vector3(tmp));        
-    }
-
-    /// cross product
-    Vector3 opBinary(string op)(ref Vector3 rhs) if (op == "%") {
-        return Vector3((v[1] * rhs.v[2]) - (v[2] * rhs.v[1]),
-                       (v[2] * rhs.v[0]) - (v[0] * rhs.v[2]),
-                       (v[0] * rhs.v[1]) - (v[1] * rhs.v[0]));        
-    }
+    }    
     
     /// dot product
     T opBinary(string op)(ref Vector3 rhs) if (op == "*") {
@@ -110,28 +120,14 @@ struct Vector3(T)
         return value;
     }
     
-    /// add vector
-    Vector3 opBinary(string op)(ref Vector3 rhs) if (op == "+") {
-        auto tmp = v[].dup;
-        tmp[] += rhs.v[];
-        return (Vector3(tmp));     
-    }
-    
-    /// subtract vector
-    Vector3 opBinary(string op)(ref Vector3 rhs) if (op == "-") {
-        auto tmp = v[].dup;
-        tmp[] -= rhs.v[];
-        return (Vector3(tmp));     
-    }
-
     /// cross | dot | add | subtract on self
-    ref Vector3 opOpAssign(string op)(ref Vector3 rhs) {
+    Vector3 opOpAssign(string op)(ref Vector3 rhs) {
         v = opBinary!op(rhs).v;
         return this;
     }
     
     /// scalar multiply on self
-    ref Vector3 opOpAssign(string op)(T rhs) {
+    Vector3 opOpAssign(string op)(T rhs) {
         v = opBinary!op(rhs).v;
         return this;
     }    
@@ -185,9 +181,13 @@ unittest
     v.normalize();
     assert(v.toString() == "real[0.35218, 0.616316, 0.704361]");
     assert((v.crossProduct(v)).v == [0, 0, 0]);
-    
+
     auto v2 = Vector3!double([2, 1, 2]);
     auto v3 = Vector3!double([4, 10, 8]);
+    auto vCPM = v2.crossProduct(v3);
+    auto vCPO = v2 % v3;
+    assert(vCPM == vCPO);
+
     v2.addScaledVector(v3, 3);
     assert(v2.v == [14, 31, 26]);
     assert(v3.v == [4, 10, 8]);
