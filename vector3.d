@@ -6,7 +6,8 @@ module vector3;
 
 import std.stdio, std.math, std.conv, std.traits;
 
-struct Vector3(T) if (isFloatingPoint!T)
+struct Vector3(T)
+    if (isFloatingPoint!T)
 {
     /// vector data: x = 0, y = 1, z = 2... as one would hopefully expect...
     T[3] v = [0, 0, 0];
@@ -264,6 +265,8 @@ unittest
     assert(x == 216);
     assert(r.v == [150, 24, -102]);
     assert(q.v == [3, 3, 3]);
+    auto opEq = Vector3!real(3, 3, 3);
+    assert(q == opEq);
 
     auto n = Vector3!double(2, 2, 2);
     auto m = n * 4.0;
