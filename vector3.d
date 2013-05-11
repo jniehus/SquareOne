@@ -219,6 +219,10 @@ unittest
 // unittest operator overloads
 unittest
 {
+    auto v_ = Vector3!float();
+    auto q_ = Vector3!float();
+    assert(v_ == q_);
+
     auto v = Vector3!real(2, 4, 6);
     auto q = Vector3!real(5, 7, 9);
     auto s = Vector3!real(5, 7, 9);
